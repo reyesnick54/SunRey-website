@@ -1,6 +1,6 @@
 # SunRey — Website Build Instructions
 
-**Repository:** `sunrey-web`
+**Repository:** `sunrey-website`
 **Deploys to:** `sunrey.xyz` / `www.sunrey.xyz`
 **Owner:** Nick — SunRey Technologies
 **Spec version:** 3.1 · September 2026
@@ -234,7 +234,7 @@ version, do not fight it — render the eight OG images once with a script into
 ### 3.1 Repository structure
 
 ```
-sunrey-web/
+sunrey-website/
 ├── CLAUDE.md                       ← this file
 ├── next.config.mjs
 ├── tailwind.config.ts

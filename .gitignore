@@ -36,3 +36,4 @@ scripts/papers/__pycache__/
 scripts/papers/json/
 scripts/papers/figures/
 scripts/papers/web-figures/
+.verify/

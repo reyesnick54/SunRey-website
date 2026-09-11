@@ -3,15 +3,15 @@ import Link from 'next/link';
 import { FOOTER_LEGAL, LABELS } from '@content/site';
 import { FOOTER_COLUMNS } from '@/lib/nav';
 import { Disclosure } from './Disclosure';
+import { Wordmark } from './Wordmark';
 
 /**
  * Footer — CLAUDE.md §6.3.
  *
  * Three tiers on --bg-sunken:
- *   1. The wordmark band. SUNREY at clamp(4rem, 18vw, 14rem), weight 200, in a
- *      vertical --sun-900 → transparent gradient, cropped so the bottom third is
- *      cut off by the section edge. Purely typographic, and decorative — it is
- *      hidden from the accessibility tree, since the page already says SunRey.
+ *   1. The wordmark band — public/wordmark.svg at 1240px wide, faded downward,
+ *      cropped by a 196px box so its base is cut off by the section edge. The
+ *      real mark, not type (§6.3, §14).
  *   2. Four link columns.
  *   3. The §2.3 disclosure, the copyright and the confidentiality line.
  */
@@ -19,22 +19,22 @@ export function Footer() {
   return (
     <footer className="relative z-10 mt-auto bg-bg-sunken">
       {/*
-        Tier 1 — the wordmark band.
+        Tier 1 — the wordmark band (§6.3).
 
-        The crop is measured, not guessed. In Jost at line-height 1 the capitals
-        occupy from 12.4% to 86.6% of the line box (cap height is 72.1% of the
-        font size, and the baseline sits 84.5% down). Cutting the band at 0.62em
-        therefore removes very close to the bottom third of the glyphs, at every
-        size in the clamp, which is what §6.3 asks for. The font size is set on
-        the band so the `em` height tracks it.
+        The mark is 1240px wide inside a 196px-tall clipped box, so its base is
+        cut off by the section edge rather than by a measured crop. The mask
+        fades it out downward. Decorative: the page already says SunRey, so it
+        is hidden from the accessibility tree.
+
+        Below 1240px the mark keeps its width and overflows the viewport on both
+        sides — which is the intended composition, and why the box clips rather
+        than scrolls.
       */}
       <div
         aria-hidden="true"
-        className="pointer-events-none flex h-[0.62em] select-none justify-center overflow-clip text-[clamp(4rem,18vw,14rem)]"
+        className="pointer-events-none flex h-[196px] select-none justify-center overflow-hidden [-webkit-mask-image:linear-gradient(180deg,#000_0%,rgba(0,0,0,.35)_62%,transparent_96%)] [mask-image:linear-gradient(180deg,#000_0%,rgba(0,0,0,.35)_62%,transparent_96%)]"
       >
-        <span className="bg-[linear-gradient(to_bottom,var(--sun-900)_8%,transparent_100%)] bg-clip-text font-display text-[1em] leading-[1] font-extralight tracking-[-0.03em] text-transparent">
-          SUNREY
-        </span>
+        <Wordmark width={1240} className="max-w-none shrink-0 opacity-[.16]" />
       </div>
 
       <div className="mx-auto max-w-[var(--container-max)] px-[var(--container-pad)]">

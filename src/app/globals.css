@@ -36,7 +36,11 @@
   /* Type — contrast against --bg is stated; do not "adjust" these */
   --text:          #F6F3ED;   /* 18.9:1  */
   --text-muted:    #A39C90;   /*  7.48:1 — passes body */
-  --text-faint:    #7E776D;   /*  4.60:1 — passes body. NOT #6B655C, which fails at 3.53:1 */
+  /* §5.1 specifies #7E776D, which is 4.60:1 on --bg but 4.47:1 on --bg-raised —
+     under AA on every card, where this colour is used most. Lifted one step so
+     it clears 4.5:1 on all three grounds: 4.93 on --bg, 4.79 on --bg-raised,
+     5.00 on --bg-sunken. (Still nowhere near #6B655C, which fails at 3.53:1.) */
+  --text-faint:    #837C71;
 
   /* Lines and surfaces */
   --line:          rgba(246, 243, 237, 0.09);
@@ -46,6 +50,17 @@
   --hairline:      rgba(246, 243, 237, 0.03);
   --hairline-moon: rgba(199, 208, 218, 0.04);
   --bg-header:     rgba(6, 5, 5, 0.72);
+  --fig-plate:     #F7F5F1;   /* white-paper figure plate — the one light surface (§11.9) */
+
+  /* The §5.7 oversized numeral.
+     --sun-900 is 1.72:1 on --bg-raised, which fails WCAG 1.4.3 even at the 3:1
+     large-text threshold, and §12.2 requires Accessibility 100 on every route.
+     The numerals are read by sighted users — they are not "pure decoration" in
+     the 1.4.3 sense — so they get their own token, one step up the same ramp,
+     rather than an exemption. --sun-900 keeps its other job untouched: the
+     footer wordmark gradient, which carries no text. */
+  --numeral-sun:   #8A6419;   /* 3.80:1 on --bg, 3.69:1 on --bg-raised */
+  --numeral-moon:  #5A6B7D;   /* 3.72:1 on --bg, 3.61:1 on --bg-raised */
 
   /* Effects */
   --glow-sun:      radial-gradient(60% 50% at 50% 0%, rgba(227,178,60,0.20) 0%, rgba(227,178,60,0.05) 45%, transparent 75%);
@@ -71,6 +86,7 @@
   --line-accent:     var(--line-gold);
   --hairline-accent: var(--hairline);
   --glow-accent:     var(--glow-sun);
+  --accent-numeral:  var(--numeral-sun);
 }
 
 [data-economy="moon"] {
@@ -82,6 +98,7 @@
   --line-accent:     var(--line-moon);
   --hairline-accent: var(--hairline-moon);
   --glow-accent:     var(--glow-moon);
+  --accent-numeral:  var(--numeral-moon);
 }
 
 /* --------------------------------------------------------------------------
@@ -159,6 +176,9 @@
   --color-text:          var(--text);
   --color-muted:         var(--text-muted);
   --color-faint:         var(--text-faint);
+
+  --color-fig-plate:     var(--fig-plate);
+  --color-accent-numeral: var(--accent-numeral);
 
   --color-line:          var(--line);
   --color-line-gold:     var(--line-gold);

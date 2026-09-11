@@ -13,11 +13,12 @@ export type Route = {
   href: string;
 };
 
-/** The seven centred header links. `/` is the wordmark, not a nav item. */
+/** The eight centred header links. `/` is the wordmark, not a nav item. */
 export const NAV: readonly Route[] = [
   { label: 'Blockchain', href: '/blockchain' },
   { label: 'SunRey Coin', href: '/sunrey-coin' },
   { label: 'MoonRey Coin', href: '/moonrey-coin' },
+  { label: 'Exchange', href: '/exchange' },
   { label: 'A.I. Agents', href: '/ai-agents' },
   { label: 'Access', href: '/access' },
   { label: 'Vault', href: '/vault' },
@@ -34,6 +35,7 @@ export const FOOTER_COLUMNS: readonly { heading: string; links: readonly Route[]
     links: [
       { label: 'Blockchain', href: '/blockchain' },
       { label: 'A.I. Agents', href: '/ai-agents' },
+      { label: 'Exchange', href: '/exchange' },
       { label: 'Vault', href: '/vault' },
       { label: 'Access', href: '/access' },
     ],

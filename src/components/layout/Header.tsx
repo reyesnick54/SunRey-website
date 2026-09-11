@@ -16,27 +16,29 @@ import { Wordmark } from './Wordmark';
  * Fixed to top. Transparent at scroll 0; past 24px it takes --bg-header, a 16px
  * backdrop blur and a --line bottom border, over 240ms.
  *
- * Three zones: wordmark left, the seven centred nav links, status pill right.
+ * Three zones: wordmark left, the eight centred nav links, status pill right.
  * The pill is not a link.
  *
- * BREAKPOINT, and why it is 1280px rather than §6.2's 1024px. Measured at micro
- * type with §5.2's 0.18em tracking, the seven §1.1 labels are 723px wide even at
- * a tight gap. The nav is centred on the VIEWPORT, not on the space left over,
- * so each side needs (W - 723)/2 of clearance: 139px of wordmark plus 64px of
- * container padding on the left, and a 171px status pill plus padding on the
- * right. That resolves to W >= ~1272. At 1024px the nav would overlap the
- * wordmark by roughly 40px — there is no gap or wordmark size that fixes it.
+ * THE WIDTH BUDGET, which is tighter than it looks. The container is 1240px
+ * with 64px of side padding (§5.3), so the row has 1112px to work with at every
+ * viewport from 1240px up — it stops growing there, and the header gets no
+ * wider however wide the window is. The wordmark takes 135 and the status pill
+ * 171, leaving 758 for eight nav labels and their gaps. Nav.tsx is tuned to
+ * that budget and measures 718.
  *
- * So all three zones appear together at 1280px and the overlay menu covers
- * everything below, which also keeps the pill from ever disappearing. Flagged
- * for Nick: honouring 1024px exactly needs shorter labels (§1.1) or tighter
- * nav tracking (§5.2). Both are his call, not mine.
+ * The zones are a `1fr auto 1fr` grid rather than a nav absolutely centred over
+ * the row. Absolute centring ignores the side zones, and with eight items it
+ * overlapped the status pill by 22px at every width from 1280 up; the fix that
+ * followed squeezed the wordmark off its 6.7593:1 ratio, which §14 forbids
+ * outright. Equal side tracks centre the nav on the container — and since the
+ * padding is symmetric, on the viewport too — while reserving each side's
+ * space, so neither collision can recur.
  *
- * Note the second constraint, which is easy to miss: the wordmark and pill sit
- * inside the 1240px container (§5.3) while the nav is centred on the VIEWPORT.
- * Above 1240px the container stops growing, so the clearances stay fixed at
- * 55px and 23px no matter how wide the window gets — which is why neither the
- * wordmark nor the nav gap may grow at large sizes. They used to, and collided.
+ * BREAKPOINT, and why it is 1280px rather than §6.2's 1024px: at 1024px the
+ * row has 896px, which is less than 135 + 718 + 171 + gaps. There is no gap or
+ * tracking that fixes that without making the labels illegible, so all three
+ * zones appear together at 1280px and the overlay menu covers everything below.
+ * Flagged for Nick: honouring 1024px exactly needs shorter labels (§1.1).
  */
 
 const SCROLL_THRESHOLD = 24;
@@ -67,23 +69,31 @@ export function Header() {
           : 'border-transparent bg-transparent',
       ].join(' ')}
     >
-      <div className="mx-auto flex h-full max-w-[var(--container-max)] items-center justify-between gap-6 px-[var(--container-pad)]">
+      {/*
+        Three zones — §6.1: wordmark left, nav centred, status pill right.
+
+        A grid of `1fr auto 1fr`, not absolute centring. Both side tracks take
+        the same width, so the nav sits on the container's centre line — and
+        because the container's side padding is symmetric, that is the viewport
+        centre line too. The difference from absolute centring is that the side
+        tracks reserve their own space: with eight nav items the centred row is
+        814px wide and the pill is 171px, and absolute centring overlapped them
+        by 22px at every width from 1280 up. A grid cannot overlap.
+      */}
+      <div className="mx-auto grid h-full max-w-[var(--container-max)] grid-cols-[auto_1fr] items-center gap-6 px-[var(--container-pad)] xl:grid-cols-[1fr_auto_1fr]">
         <Link
           href={HOME.href}
           aria-label={LABELS.home}
-          className="relative z-10 shrink-0 text-text"
+          className="relative z-10 shrink-0 justify-self-start text-text"
         >
-          <Wordmark className="h-5 w-auto" />
+          <Wordmark height={20} priority className="h-5 w-auto max-w-none" />
         </Link>
 
-        {/* Centred on the viewport, not on the remaining space. */}
-        <div className="pointer-events-none absolute inset-0 hidden items-center justify-center xl:flex">
-          <div className="pointer-events-auto">
-            <Nav />
-          </div>
+        <div className="hidden justify-self-center xl:block">
+          <Nav />
         </div>
 
-        <div className="relative z-10 flex shrink-0 items-center">
+        <div className="relative z-10 flex items-center justify-self-end">
           <div className="hidden xl:block">
             <Pill tone="status" dot pulse>
               {STATUS_PILL}

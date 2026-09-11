@@ -48,7 +48,7 @@ that with a server-side Function. The Phase 0 output is unaffected and is kept.
 
 ### Deploying it
 
-1. Push the repo to a private GitHub repo — `sunrey-web`.
+1. Push the repo to a private GitHub repo — `sunrey-website`.
 2. Cloudflare Pages → Create project → connect the repo.
    Build command `npm run build`, output directory `out`.
 3. Environment variables, encrypted, **Production and Preview both**:

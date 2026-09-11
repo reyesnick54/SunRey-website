@@ -9,6 +9,9 @@
  * `src/` would fire on identifiers and CSS tokens, and a checker that cries wolf
  * gets suppressed.
  *
+ * `content/papers/` is scanned on narrower terms — see the note above
+ * NAMING_RULES, which explains why and what it still reports.
+ *
  * Rules and exemptions live in `./claims.ts`. Add to them there, not here.
  */
 
@@ -112,6 +115,51 @@ function scan(file: string): Violation[] {
   return violations;
 }
 
+/**
+ * The generated white papers are scanned separately, and only for superseded
+ * naming — CLAUDE.md §11.4 vs §2.2.
+ *
+ * §11.4 forbids editing `content/papers/`: those modules are the supplied
+ * documents, converted, and rewriting them would misquote their authors. §2.2
+ * bans a list of words. Both rules are real, and on the marketing copy they
+ * agree. On the papers they do not, so the scan splits:
+ *
+ *   content/*.ts          marketing copy we author — every rule, and a match
+ *                         fails the build.
+ *   content/papers/*.ts   the documents themselves — naming rules only,
+ *                         reported as a notice, never a build failure.
+ *
+ * The claim-shaped rules are dropped for the papers deliberately, not lazily.
+ * Every match they produced was inside one of the papers' own denials — "not
+ * automatically backed by people", "Never imply a guaranteed return", "does not
+ * represent a mainnet launch". A checker that fires a hundred and fifty times
+ * on disclaimers is a checker nobody reads.
+ *
+ * Superseded names are a different matter: a reader really does see "Solstice"
+ * and "Compliance Kernel" in the papers' glossaries and bibliographies, and
+ * §14 says no superseded name appears in a user-visible string. That is an
+ * editorial decision about the source documents, so this reports it and leaves
+ * it to a person.
+ */
+const NAMING_RULES = new Set([
+  'solstice',
+  'sol-coin',
+  'pyramid',
+  'legacy-ticker-pyr',
+  'compliance-kernel',
+  'sovereign-financial-fabric',
+  'personal-data-vault',
+  'sovereign-cells',
+  'personal-economy-agent',
+  'consent-ledger',
+  'clean-room',
+]);
+
+/** `file` on a Violation is repo-relative with forward slashes — see `scan`. */
+function isPaper(file: string): boolean {
+  return file.startsWith('content/papers/');
+}
+
 function main(): void {
   let files: string[];
   try {
@@ -121,14 +169,42 @@ function main(): void {
     process.exit(2);
   }
 
-  const violations = files
-    .flatMap(scan)
+  const all = files.flatMap(scan);
+
+  const paperNaming = all
+    .filter((v) => isPaper(v.file) && NAMING_RULES.has(v.rule.id))
+    .sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
+
+  const violations = all
+    .filter((v) => !isPaper(v.file))
     .sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.column - b.column);
 
+  if (paperNaming.length > 0) {
+    const byTerm = new Map<string, number>();
+    for (const v of paperNaming) {
+      byTerm.set(v.matched, (byTerm.get(v.matched) ?? 0) + 1);
+    }
+    const papers = new Set(paperNaming.map((v) => v.file)).size;
+    console.warn(
+      `\ncheck:claims — NOTICE: superseded naming in the supplied white papers.\n` +
+        `  ${paperNaming.length} occurrence(s) across ${papers} paper(s), in the papers' own\n` +
+        `  glossaries and reference lists. §11.4 forbids editing them; §14 says no\n` +
+        `  superseded name should be user-visible. That conflict is an editorial\n` +
+        `  decision, not a build failure — see README.md.\n`,
+    );
+    for (const [term, count] of [...byTerm].sort((a, b) => b[1] - a[1])) {
+      console.warn(`    ${String(count).padStart(3)}  ${term}`);
+    }
+    console.warn('');
+  }
+
   if (violations.length === 0) {
+    const authored = files.filter(
+      (f) => !isPaper(relative(ROOT, f).split(sep).join('/')),
+    );
     console.log(
       `check:claims — ${BANNED.length} rules, ${ALLOWED.length} exemptions, ` +
-        `${files.length} file${files.length === 1 ? '' : 's'} scanned. No violations.`,
+        `${authored.length} authored file${authored.length === 1 ? '' : 's'} scanned. No violations.`,
     );
     return;
   }

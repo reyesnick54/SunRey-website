@@ -1,10 +1,26 @@
-import type { PageContent } from './types';
+import type { NavLink, PageMeta } from './types';
 
 /**
- * CLAUDE.md — production copy for this route. Empty until the phase that builds
- * the page (§13). Transcribe §7–§11 verbatim; do not paraphrase.
+ * Not Found (`/not-found`) — CLAUDE.md §11.7. Production copy, transcribed
+ * verbatim.
  */
-export const notFound: PageContent = {
-  meta: { title: '', description: '' },
-  sections: [],
+export type NotFoundContent = {
+  meta: PageMeta;
+  eyebrow: string;
+  /** Two lines, two-tone — the second line accented (§5.2 treatment 1). */
+  heading: readonly [string, string];
+  lede: string;
+  link: NavLink;
+};
+
+export const notFound: NotFoundContent = {
+  meta: {
+    title: 'Nothing Here — SunRey',
+    description: 'That page does not exist. The eight that do are in the navigation above.',
+  },
+
+  eyebrow: '404',
+  heading: ['Nothing here.', 'Yet.'],
+  lede: 'That page does not exist. The eight that do are in the navigation above.',
+  link: { label: 'Return home →', href: '/' },
 };

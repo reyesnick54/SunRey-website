@@ -581,6 +581,17 @@ export const ALLOWED: readonly AllowedPhrase[] = [
   { phrase: 'Not backed by people.', ref: '§9.2' },
   { phrase: 'No passive yield, guaranteed appreciation', ref: '§9.5' },
   { phrase: 'not collateralized by individuals, by their data', ref: '§9.2' },
+
+  // §8.4, added when the Blockchain page was built. Both are verbatim spec copy
+  // in denial constructions: the first contrasts SunRey against the chains that
+  // measure throughput, the second denies that an index carries asset value.
+  { phrase: 'blocks, fees, throughput', ref: '§8.4 lede' },
+  { phrase: 'Neither represents guaranteed asset value', ref: '§8.4 closing callout' },
+
+  // §11.4, paper 07's own cover disclaimer, quoted verbatim on its card and at
+  // the foot of its article. A paper that says no return is guaranteed is the
+  // opposite of a return claim.
+  { phrase: 'No investment return is guaranteed.', ref: "§11.4 paper 07 cover" },
 ];
 
 /* ==========================================================================

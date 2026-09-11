@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 
-import { GateProvider } from '@/components/gate/GateProvider';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { GlowField } from '@/components/motion/GlowField';
@@ -11,8 +10,10 @@ import './globals.css';
 /**
  * Root layout — CLAUDE.md §3, §5, §6, §12.3.
  *
- * The gate provider wraps the entire shell, header and footer included: while a
- * visitor is locked, §4.2 requires the gate screen and nothing else.
+ * There is no gate component here by design. The gate is a Cloudflare Pages
+ * Function (§4) that runs before any file is served, so an unauthenticated
+ * visitor never reaches this layout at all — and never receives its HTML.
+ * That is the difference between a lock and a curtain.
  *
  * The `robots` object below is the ONLY place robots directives are declared.
  * Next renders the meta tag from it — do not also hand-write a
@@ -48,12 +49,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={fontVariables}>
       <body className="flex min-h-dvh flex-col">
-        <GateProvider>
-          <GlowField />
-          <Header />
-          <div className="relative z-10 flex min-h-dvh flex-col">{children}</div>
-          <Footer />
-        </GateProvider>
+        <GlowField />
+        <Header />
+        <div className="relative z-10 flex min-h-dvh flex-col">{children}</div>
+        <Footer />
       </body>
     </html>
   );
