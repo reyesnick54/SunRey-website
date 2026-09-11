@@ -1,0 +1,38 @@
+# --- SECRETS: never commit ---
+.env
+.env.*
+!.env.example
+# GATE_PASSWORD and GATE_SECRET live in Cloudflare Pages env vars only.
+
+# --- White papers ---
+# Deliberately NOT ignored. These are public architecture papers and Cloudflare
+# Pages deploys from the repo — ignoring them breaks every download link.
+
+# --- Node / Next ---
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Tooling ---
+.vercel
+.turbo
+coverage/
+.eslintcache
+.wrangler/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- Generator scratch ---
+scripts/papers/__pycache__/
+scripts/papers/json/
+scripts/papers/figures/
+scripts/papers/web-figures/

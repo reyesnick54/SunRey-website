@@ -1,0 +1,287 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* ==========================================================================
+   SunRey design tokens — CLAUDE.md §5.1 (color) and §5.2 (type).
+
+   The site is dark-only by design. There is no theme toggle and no
+   prefers-color-scheme block: this is a single committed look.
+
+   Contrast ratios in the comments are measured against --bg (#060505).
+   Do not "adjust" the type colors; the ratios are load-bearing.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* Ground */
+  --bg:            #060505;   /* page base */
+  --bg-raised:     #0C0A08;   /* cards */
+  --bg-sunken:     #030303;   /* footer, gate */
+
+  /* SunRey — human economy. Warm gold. Each has exactly one job. */
+  --sun-100:       #FBEFCF;   /* two-tone display: line one, when warmed off pure --text */
+  --sun-300:       #F0D68B;   /* gold prose at body/lede size */
+  --sun-500:       #E3B23C;   /* primary accent: micro labels, display, rules, icons, glow */
+  --sun-700:       #A87C1E;   /* secondary state (TESTNET pill), dim icon strokes */
+  --sun-900:       #4A360D;   /* oversized numerals, footer wordmark gradient */
+
+  /* MoonRey — autonomous economy. Cool silver. Mirrors the gold ramp role for role. */
+  --moon-100:      #EEF2F6;   /* MoonRey two-tone display line one */
+  --moon-300:      #C3CEDA;   /* silver prose at body/lede size */
+  --moon-500:      #8FA3B8;   /* MoonRey primary accent */
+  --moon-700:      #4A5A6B;   /* borders and fills ONLY — fails contrast as text */
+  --moon-900:      #1A222A;   /* MoonRey footer wordmark gradient, diagram fills */
+
+  /* Type — contrast against --bg is stated; do not "adjust" these */
+  --text:          #F6F3ED;   /* 18.9:1  */
+  --text-muted:    #A39C90;   /*  7.48:1 — passes body */
+  --text-faint:    #7E776D;   /*  4.60:1 — passes body. NOT #6B655C, which fails at 3.53:1 */
+
+  /* Lines and surfaces */
+  --line:          rgba(246, 243, 237, 0.09);
+  --line-gold:     rgba(227, 178, 60, 0.28);
+  --line-moon:     rgba(143, 163, 184, 0.28);
+  --line-accent:   var(--line-gold);   /* remapped to --line-moon on MoonRey pages */
+  --hairline:      rgba(246, 243, 237, 0.03);
+  --hairline-moon: rgba(199, 208, 218, 0.04);
+  --bg-header:     rgba(6, 5, 5, 0.72);
+
+  /* Effects */
+  --glow-sun:      radial-gradient(60% 50% at 50% 0%, rgba(227,178,60,0.20) 0%, rgba(227,178,60,0.05) 45%, transparent 75%);
+  --glow-moon:     radial-gradient(60% 50% at 50% 0%, rgba(143,163,184,0.16) 0%, transparent 72%);
+}
+
+/* --------------------------------------------------------------------------
+   Accent indirection.
+
+   Every component that needs "the accent colour" reads --accent-*, never
+   --sun-* or --moon-* directly. Setting data-economy="moon" on a subtree
+   (CLAUDE.md §13 Phase 3 puts it on <main> of /moonrey-coin) swaps the whole
+   ramp role for role. This is the only sanctioned way to shift the palette.
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-economy="sun"] {
+  --accent-100:      var(--sun-100);
+  --accent-300:      var(--sun-300);
+  --accent-500:      var(--sun-500);
+  --accent-700:      var(--sun-700);
+  --accent-900:      var(--sun-900);
+  --line-accent:     var(--line-gold);
+  --hairline-accent: var(--hairline);
+  --glow-accent:     var(--glow-sun);
+}
+
+[data-economy="moon"] {
+  --accent-100:      var(--moon-100);
+  --accent-300:      var(--moon-300);
+  --accent-500:      var(--moon-500);
+  --accent-700:      var(--moon-700);
+  --accent-900:      var(--moon-900);
+  --line-accent:     var(--line-moon);
+  --hairline-accent: var(--hairline-moon);
+  --glow-accent:     var(--glow-moon);
+}
+
+/* --------------------------------------------------------------------------
+   Layout, type and motion constants — CLAUDE.md §5.2, §5.3, §5.6
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Layout — §5.3, §6.1 */
+  --header-h:        64px;
+  --container-max:   1240px;
+  --container-pad:   clamp(20px, 5vw, 64px);
+  --section-pad:     clamp(96px, 14vh, 176px);
+  --grid-gap:        24px;
+
+  /* Measure — §5.2 */
+  --measure-body:    68ch;
+  --measure-lede:    56ch;
+
+  /* Surfaces — §5.4 */
+  --radius-card:     16px;
+
+  /* Motion — §5.6 */
+  --ease:            cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-hover:       220ms;
+  --dur-reveal:      700ms;
+  --dur-nav:         180ms;
+  --dur-header:      240ms;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --section-pad: clamp(64px, 10vh, 96px);
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 76px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tailwind theme bridge.
+
+   Exposes the tokens above as Tailwind utilities (bg-bg, text-muted,
+   border-line, font-display, text-display-xl, …) so components never need a
+   raw value. Everything here points at a custom property — this block adds no
+   new colours, it only names the ones already defined.
+   -------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-bg:            var(--bg);
+  --color-bg-raised:     var(--bg-raised);
+  --color-bg-sunken:     var(--bg-sunken);
+  --color-bg-header:     var(--bg-header);
+
+  --color-sun-100:       var(--sun-100);
+  --color-sun-300:       var(--sun-300);
+  --color-sun-500:       var(--sun-500);
+  --color-sun-700:       var(--sun-700);
+  --color-sun-900:       var(--sun-900);
+
+  --color-moon-100:      var(--moon-100);
+  --color-moon-300:      var(--moon-300);
+  --color-moon-500:      var(--moon-500);
+  --color-moon-700:      var(--moon-700);
+  --color-moon-900:      var(--moon-900);
+
+  --color-accent-100:    var(--accent-100);
+  --color-accent-300:    var(--accent-300);
+  --color-accent-500:    var(--accent-500);
+  --color-accent-700:    var(--accent-700);
+  --color-accent-900:    var(--accent-900);
+
+  --color-text:          var(--text);
+  --color-muted:         var(--text-muted);
+  --color-faint:         var(--text-faint);
+
+  --color-line:          var(--line);
+  --color-line-gold:     var(--line-gold);
+  --color-line-moon:     var(--line-moon);
+  --color-line-accent:   var(--line-accent);
+  --color-hairline:      var(--hairline);
+  --color-hairline-moon: var(--hairline-moon);
+
+  --font-display:        var(--font-jost), "Trebuchet MS", "Century Gothic", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:           var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono:           var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Type scale — §5.2. Each entry is size / line-height. */
+  --text-display-xl:            clamp(3.5rem, 9vw, 8rem);
+  --text-display-xl--line-height: 0.94;
+  --text-display-l:             clamp(2.5rem, 5.5vw, 4.5rem);
+  --text-display-l--line-height:  1.02;
+  --text-display-m:             clamp(1.875rem, 3.2vw, 2.75rem);
+  --text-display-m--line-height:  1.14;
+  --text-title:                 1.25rem;
+  --text-title--line-height:      1.35;
+  --text-lede:                  clamp(1.0625rem, 1.4vw, 1.25rem);
+  --text-lede--line-height:       1.6;
+  --text-body:                  1rem;
+  --text-body--line-height:       1.7;
+  --text-micro:                 0.75rem;
+  --text-micro--line-height:      1.4;
+
+  --tracking-display-xl: -0.03em;
+  --tracking-display-l:  -0.025em;
+  --tracking-display-m:  -0.02em;
+  --tracking-title:      -0.01em;
+  --tracking-micro:      0.18em;
+
+  --ease-sunrey:  var(--ease);
+  --radius-card:  var(--radius-card);
+
+  --container-sunrey: var(--container-max);
+}
+
+/* --------------------------------------------------------------------------
+   Base layer
+   -------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    /* The page body must never scroll horizontally — §5.8. Wide content gets
+       its own overflow-x container instead. */
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  /* §12.1 — visible focus ring everywhere. Never remove this. */
+  :focus-visible {
+    outline: 2px solid var(--sun-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--sun-500);
+    color: var(--bg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Keyframes.
+
+   Every animation that uses these is applied under Tailwind's `motion-safe:`
+   variant, and the reduced-motion block below damps anything that slips through.
+   -------------------------------------------------------------------------- */
+
+@keyframes sunrey-shake {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-7px); }
+  30%      { transform: translateX(6px); }
+  45%      { transform: translateX(-4px); }
+  60%      { transform: translateX(3px); }
+  80%      { transform: translateX(-1px); }
+}
+
+@keyframes sunrey-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion — §5.6, §12.1.
+
+   When reduced motion is set, every transition and animation renders its
+   final state immediately. Parallax is disabled at the component level in
+   addition to this blanket rule.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
