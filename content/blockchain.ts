@@ -117,12 +117,6 @@ export type BlockchainContent = {
     closing: string;
   };
 
-  /** §8.8 — status */
-  status: {
-    eyebrow: string;
-    heading: Heading;
-    body: readonly string[];
-  };
 };
 
 export const blockchain: BlockchainContent = {
@@ -304,12 +298,4 @@ export const blockchain: BlockchainContent = {
       'These systems create evidence, calculations and proposals. Only the canonical protocol path can finalize a supply-changing transition, and only after the applicable governance and consensus requirements are satisfied.',
   },
 
-  status: {
-    eyebrow: 'CURRENT STATE',
-    heading: ['Testnet.'],
-    body: [
-      'SunRey Chain currently runs as a preproduction, testnet-grade network with validator consensus, persistent state and two native assets, inside an internal sandbox environment. Mainnet is not active.',
-      'Activation of any public network, regulated rail or live financial capability requires external security review, provider prerequisites and formal governance decisions that have not been taken. Premature activation is treated as a named failure mode in the architecture, not an acceptable risk.',
-    ],
-  },
 };

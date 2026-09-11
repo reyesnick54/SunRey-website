@@ -66,13 +66,6 @@ export default function ExchangePage() {
         heading={exchange.listingDiscipline.heading}
         items={exchange.listingDiscipline.items}
       />
-
-      <CopySection
-        id="exchange-status-heading"
-        eyebrow={exchange.status.eyebrow}
-        heading={exchange.status.heading}
-        body={exchange.status.body}
-      />
     </main>
   );
 }

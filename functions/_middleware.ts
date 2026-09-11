@@ -150,35 +150,68 @@ async function sessionCookie(secret: string): Promise<string> {
    that reason: /wordmark.svg is behind the gate like everything else.
    --------------------------------------------------------------------------- */
 
+/**
+ * The starburst — CLAUDE.md §11.8.
+ *
+ * A burst, not a wheel of spokes. Each ray is a tapered triangle drawn pointing
+ * up and then rotated into place, so the tip-to-base gradient follows the ray
+ * instead of running across the whole figure. Lengths cycle on four tiers, which
+ * is what gives the burst its irregular, radiant read rather than the even
+ * clock-face a single length produces.
+ *
+ * Three layers stack into the light: a wide bloom, a tight bright core halo, and
+ * the rays between them. The core is warm white rather than pure white (§5.1).
+ */
 function sunMark(): string {
-  const spokes: string[] = [];
-  for (let i = 0; i < 32; i += 1) {
-    const angle = (i / 32) * Math.PI * 2;
-    const inner = 26;
-    const outer = i % 2 === 0 ? 196 : 140;
-    const x1 = 200 + Math.cos(angle) * inner;
-    const y1 = 200 + Math.sin(angle) * inner;
-    const x2 = 200 + Math.cos(angle) * outer;
-    const y2 = 200 + Math.sin(angle) * outer;
-    spokes.push(
-      `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="url(#ray)" stroke-width="1.25" stroke-linecap="round"/>`,
+  const RAYS = 64;
+  const rays: string[] = [];
+
+  for (let i = 0; i < RAYS; i += 1) {
+    const angle = (i / RAYS) * 360;
+
+    // Four tiers of length. The longest sit on the 16ths, so the burst reads as
+    // a few dominant shafts over a dense field of shorter ones.
+    let len: number;
+    if (i % 16 === 0) len = 288;
+    else if (i % 8 === 0) len = 232;
+    else if (i % 4 === 0) len = 176;
+    else if (i % 2 === 0) len = 126;
+    else len = 88;
+
+    const half = len > 240 ? 5.2 : len > 170 ? 3.8 : len > 110 ? 2.8 : 2.0;
+    const base = 300 - 12; // rays start just outside the core, not at dead centre
+
+    rays.push(
+      `<g transform="rotate(${angle.toFixed(2)} 300 300)">` +
+        `<polygon points="300,${300 - len} ${300 - half},${base} ${300 + half},${base}" fill="url(#ray)"/>` +
+        `</g>`,
     );
   }
-  return `<svg class="sun" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+
+  return `<svg class="sun" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
   <defs>
-    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#E3B23C" stop-opacity=".20"/>
-      <stop offset="55%" stop-color="#E3B23C" stop-opacity=".05"/>
+    <radialGradient id="bloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F0D68B" stop-opacity=".34"/>
+      <stop offset="26%" stop-color="#E3B23C" stop-opacity=".16"/>
+      <stop offset="58%" stop-color="#E3B23C" stop-opacity=".05"/>
+      <stop offset="100%" stop-color="#E3B23C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FDF3D8" stop-opacity="1"/>
+      <stop offset="22%" stop-color="#FBEFCF" stop-opacity=".92"/>
+      <stop offset="52%" stop-color="#E3B23C" stop-opacity=".55"/>
       <stop offset="100%" stop-color="#E3B23C" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="ray" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#E3B23C" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="#E3B23C" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#E3B23C" stop-opacity="0"/>
+      <stop offset="55%" stop-color="#E3B23C" stop-opacity=".38"/>
+      <stop offset="88%" stop-color="#F0D68B" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#FDF3D8" stop-opacity=".95"/>
     </linearGradient>
   </defs>
-  <circle cx="200" cy="200" r="200" fill="url(#halo)"/>
-  <g>${spokes.join('')}</g>
-  <circle cx="200" cy="200" r="22" fill="#E3B23C" fill-opacity=".85"/>
+  <circle cx="300" cy="300" r="300" fill="url(#bloom)"/>
+  <g>${rays.join('')}</g>
+  <circle cx="300" cy="300" r="86" fill="url(#core)"/>
 </svg>`;
 }
 
@@ -231,12 +264,23 @@ function gateScreen(error: boolean, next: string): string {
     background: repeating-linear-gradient(18deg, transparent 0 118px, rgba(246,243,237,.03) 118px 119px);
   }
   main { position: relative; z-index: 1; width: 100%; max-width: 430px; text-align: center; }
-  .mark { position: relative; height: 150px; margin-bottom: 4px; }
-  .sun {
-    position: absolute; left: 50%; top: 50%; width: 400px; height: 400px;
-    transform: translate(-50%, -58%); max-width: none;
+  /* The burst sits above the lockup, not behind it: a fixed-height box the
+     oversized SVG is centred in and allowed to overflow, then the wordmark
+     directly underneath. */
+  .mark {
+    position: relative; height: 210px; margin-bottom: 10px;
   }
-  .wordmark { position: relative; height: 44px; width: auto; }
+  .sun {
+    position: absolute; left: 50%; top: 50%; width: 520px; height: 520px;
+    transform: translate(-50%, -50%); max-width: none; pointer-events: none;
+  }
+  .lockup { position: relative; line-height: 0; }
+  .wordmark { height: 44px; width: auto; }
+  @media (max-width: 460px) {
+    .mark { height: 168px; }
+    .sun { width: 420px; height: 420px; }
+    .wordmark { height: 38px; }
+  }
   .label {
     font-family: Jost, 'Trebuchet MS', 'Century Gothic', sans-serif;
     font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
@@ -272,7 +316,8 @@ function gateScreen(error: boolean, next: string): string {
   <div class="field"></div>
   <div class="shafts"></div>
   <main>
-    <div class="mark">${sunMark()}${wordmark()}</div>
+    <div class="mark">${sunMark()}</div>
+    <div class="lockup">${wordmark()}</div>
     <div class="label">Authorized access</div>
     <p class="intro">This site is confidential and provided to authorized recipients only.</p>
     <form method="POST" action="/__gate">
@@ -283,7 +328,7 @@ function gateScreen(error: boolean, next: string): string {
       <button type="submit">Enter</button>
       <div class="error" role="status" aria-live="polite">${error ? 'That passphrase is not recognized.' : ''}</div>
     </form>
-    <footer>SunRey Technologies<br>Pre-production · simulated environment</footer>
+    <footer>SunRey Technologies</footer>
   </main>
 </body>
 </html>`;

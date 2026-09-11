@@ -1,8 +1,7 @@
 import Link from 'next/link';
 
 import { FOOTER_LEGAL, LABELS } from '@content/site';
-import { FOOTER_COLUMNS } from '@/lib/nav';
-import { Disclosure } from './Disclosure';
+import { FOOTER_COLUMNS, LEGAL } from '@/lib/nav';
 import { Wordmark } from './Wordmark';
 
 /**
@@ -13,7 +12,8 @@ import { Wordmark } from './Wordmark';
  *      cropped by a 196px box so its base is cut off by the section edge. The
  *      real mark, not type (§6.3, §14).
  *   2. Four link columns.
- *   3. The §2.3 disclosure, the copyright and the confidentiality line.
+ *   3. A one-line disclosure summary linking to /legal, the copyright and the
+ *      confidentiality line.
  */
 export function Footer() {
   return (
@@ -64,9 +64,25 @@ export function Footer() {
           ))}
         </nav>
 
-        {/* Tier 3 — the disclosure. */}
-        <div className="flex flex-col gap-6 border-t border-line py-12">
-          <Disclosure />
+        {/*
+          Tier 3 — the disclosure line.
+
+          §6.3 originally printed the full §2.3 text here on every page. At the
+          owner's request it is one line with a link instead: the substance lives
+          on /legal, one click away, rather than as a block of small print under
+          every screen. Nothing was deleted — it moved.
+        */}
+        <div className="flex flex-col gap-3 border-t border-line py-12">
+          <p className="max-w-[72ch] text-[0.75rem] leading-[1.65] text-faint">
+            {FOOTER_LEGAL.summary}{' '}
+            <Link
+              href={LEGAL.href}
+              className="text-muted underline underline-offset-2 transition-colors duration-[var(--dur-hover)] ease-sunrey hover:text-text"
+            >
+              {LEGAL.label}
+            </Link>
+            .
+          </p>
           <p className="text-[0.75rem] leading-[1.65] text-faint">
             {FOOTER_LEGAL.copyright}{' '}
             <span className="block sm:inline">{FOOTER_LEGAL.confidential}</span>

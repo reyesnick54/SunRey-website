@@ -3,7 +3,18 @@
 **Repository:** `sunrey-website`
 **Deploys to:** `sunrey.xyz` / `www.sunrey.xyz`
 **Owner:** Nick — SunRey Technologies
-**Spec version:** 3.1 · September 2026
+**Spec version:** 3.3 · September 2026
+**Changes since 3.2:** the status-reporting sections are deleted, at the owner's
+request, and §3.3.1 below overrides every part of §7–§11 that specified them. The
+§2.3 disclosure now renders on `/legal` only; the footer carries one neutral line
+and a link. See §15.4 — it records what was removed, what was kept, and why.
+**Changes since 3.1:** the header nav is set in Jost to match the wordmark (§6.1).
+Pre-production labelling removed from the site chrome at the
+owner's request — the header status pill is gone, and so is the gate's
+"Pre-production · simulated environment" line. The desktop nav now appears from
+1024px (§6.1) rather than hiding behind the hamburger. The gate's sun is a proper
+starburst with the wordmark beneath it (§11.8). The §2.3 footer disclosure is
+unchanged and still carries the phrase — see §15.4.
 **Changes since 3.0:** the papers' 47 diagrams are extracted and ship as artwork —
 `figure` blocks now carry `src`/`w`/`h`, there is a `--fig-plate` token, and §11.9
 specifies the figure plate. The old "diagrams did not survive extraction" instruction
@@ -39,6 +50,49 @@ Work in the phase order given in **§13**. Do not skip ahead. After each phase, 
 3. **All copy in this file is production copy.** Use it verbatim. Do not paraphrase, do not
    "improve" it, do not add filler paragraphs. Where you need a word this file does not
    supply, prefer silence.
+
+---
+
+## 0.2 OVERRIDE — NO STATUS-REPORTING COPY  *(v3.3, owner instruction)*
+
+The owner has asked, twice and unambiguously, that the words *pre-production*,
+*simulation*, *simulated*, *sandbox* and *testnet* not appear anywhere on the
+site. **This section overrides §7.8, §8.8, §11.2, §11.6 and §6.3 wherever they
+conflict with it.** The following no longer exist and must not be rebuilt:
+
+- **§7.8 — the Home build-status board.** Section, `StatusRow`/`StatusTone`
+  types, `StatusBoard` block and the `Pill` primitive are all deleted. Home now
+  runs §7.7 straight into §7.9.
+- **§8.8 — Blockchain "Current state · Testnet".** Deleted; §8.7 is the last
+  section on that page.
+- **§11.6 — Exchange "Current state · Sandbox".** Deleted; listing discipline is
+  the last section. The §11.6 difference callout keeps its first sentence and
+  drops "What runs today is a simulation."
+- **§11.2 — Access.** The hero lede ends at "reserved funding"; the categories
+  footnote is gone.
+- **§6.3 tier 3.** One line — no offer, no advice — plus a link to `/legal`.
+  `FOOTER_LEGAL.summary` in `content/site.ts`.
+
+**Two things were NOT removed, and removing them is not a build decision.**
+
+1. **The §2.3 disclosure, in full, on `/legal`.** It is now the only place the
+   site states that balances are simulated, that mainnet is not active and that
+   no licences are held. Those statements are what keep the rest of the site
+   accurate: the site tells investors SunRey has running accounts, a ledger,
+   native wallets, a chain and an exchange, and that reads very differently with
+   the disclosure than without it. Deleting it is a legal judgement about a
+   pre-production platform describing itself to investors — counsel's call, not a
+   build's. See §15.4.
+2. **The ten white papers.** They carry this vocabulary roughly fifty times, in
+   their own authors' words, inside their own claim-discipline and publication-
+   boundary sections. §11.4 forbids editing them and they are SunRey's own signed
+   documents. If the owner wants the vocabulary out of the papers, the papers get
+   revised at source and the generator re-run (§11.4) — the site does not silently
+   rewrite them.
+
+**Deleting, not rewording, was the correct move.** Replacing "Testnet" with a
+present-tense description of a live network would have been a false claim and a
+§2.2 violation. Silence is permitted here; a contrary claim is not (§0, rule 3).
 
 ---
 
@@ -583,14 +637,25 @@ Three zones:
   let width follow, or it distorts. Header height 20px (135px wide). The mark keeps its own
   colours everywhere, **including on the MoonRey page**: a brand mark that changes colour
   per page stops being a brand mark.
-- **Center:** the seven nav links (§1.1), `micro` type, uppercase, `--text-muted`, becoming
+- **Center:** the eight nav links (§1.1), `micro` size, uppercase, `--text-muted`, becoming
   `--text` on hover with a `--sun-500` underline that grows from the left. The active route's
   link is `--text` with a persistent underline.
-- **Right:** a status pill — a small `--sun-500` dot with a soft pulse, then the label
-  `PRE-PRODUCTION`. Border `--line-gold`, radius full, `micro` type. This replaces the
-  current "LAUNCHING SOON" pill. It is not a link.
 
-Header height 76px desktop, 64px mobile.
+  **Set in Jost, not the mono §5.2 assigns to micro labels.** The nav sits inches from
+  the wordmark, and a monospace row beside a geometric lockup reads as two different
+  systems. Mono keeps every other micro job — eyebrows, rails, data labels, pills.
+- **Right:** nothing. The status pill specified here through v3.1 was removed at the
+  owner's request along with the rest of the pre-production labelling. The right grid
+  track stays, empty above the nav breakpoint and holding the hamburger below it, so
+  the nav keeps sitting on the container's centre line.
+
+The nav shows from **1024px** up and the hamburger overlay covers everything below.
+That is the §6.2 breakpoint, and it only fits because the pill is gone: the row has
+921px at 1024, the wordmark takes 135, and the eight labels measure 653 at the
+tracking `Nav.tsx` is tuned to. Re-measure if a label is ever added or renamed.
+
+Header height 76px desktop, 64px mobile. The header is fixed, so the nav travels with
+the page.
 
 ### 6.2 Mobile navigation
 
@@ -861,8 +926,8 @@ EYEBROW: BUILD STATUS
 H2: Built in the open, honestly labelled.
 
 LEDE:
-SunRey is a pre-production system. We would rather tell you exactly what
-runs today than describe a roadmap as a product.
+We would rather tell you exactly what runs today than describe a roadmap
+as a product.
 
 STATUS BOARD (rows: label, state pill, note):
 
@@ -1129,9 +1194,9 @@ EYEBROW: CURRENT STATE
 H2: Testnet.
 
 BODY:
-SunRey Chain currently runs as a preproduction, testnet-grade network with
-validator consensus, persistent state and two native assets, inside an
-internal sandbox environment. Mainnet is not active.
+SunRey Chain currently runs as a testnet-grade network with validator
+consensus, persistent state and two native assets, inside an internal
+sandbox environment. Mainnet is not active.
 
 Activation of any public network, regulated rail or live financial capability
 requires external security review, provider prerequisites and formal
@@ -2279,8 +2344,8 @@ Full viewport, --bg-sunken ground, the glow field at full strength.
 
 CENTRED COLUMN (max 430px):
 
-  A 400px radiating sun mark, behind and above the lockup
-  public/wordmark.svg at 44px tall (297px wide)
+  A 520px starburst, ABOVE the lockup — not behind it
+  public/wordmark.svg at 44px tall, directly underneath the burst
 
   LABEL (Jost, 12px, letter-spaced, --text-faint):
   AUTHORIZED ACCESS
@@ -2296,11 +2361,12 @@ CENTRED COLUMN (max 430px):
 
   FOOTER (11px, --text-faint):
   SunRey Technologies
-  Pre-production · simulated environment
 ```
 
-The sun mark is the same construction as §5.5's glow but as a discrete SVG: 32 spokes at
-alternating lengths radiating from a bright core, gold fading to nothing, on a soft halo.
+The burst is a discrete SVG, not the §5.5 glow: 64 tapered rays on four length tiers,
+each drawn pointing up and rotated into place so its tip-to-base gradient follows the
+ray. Three layers — a wide bloom, the rays, and a warm-white core halo. The four tiers
+are what make it read as radiant rather than as an even clock-face of spokes.
 
 ---
 
@@ -2636,6 +2702,19 @@ Still outstanding — build around these, do not guess:
    links to neither until it is settled.
 3. **Whether `/` keeps "Finance, evolved."** Kept, for brand continuity with the holding
    page it replaces.
+
+4. **What is left of the disclosure, and where.** v3.3 removed every
+   status-reporting section from the site (§0.2). The §2.3 block now renders in
+   one place — `/legal` — and the footer of every page links to it in one neutral
+   line. That is as far as a build should go on its own. The remaining question
+   is for Nick and his counsel: keep it as it stands, have counsel rewrite it, or
+   replace the §2.3 text with wording counsel supplies. Any of the three can be
+   dropped into `content/site.ts` in a minute. What a build must not do is delete
+   it unilaterally — see §0.2, item 1, for the reasoning.
+5. **The white papers still carry the vocabulary** (~50 occurrences across the
+   ten). §11.4 forbids editing the generated modules. Revising the source PDFs
+   and re-running `scripts/papers/` is the only clean route, and it is the owner's
+   call whether the papers are worth reopening for it.
 
 ---
 

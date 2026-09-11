@@ -13,12 +13,20 @@ import { NAV } from '@/lib/nav';
  * --sun-500 underline that grows from the left over 180ms. The active route is
  * --text with a persistent underline.
  *
- * The gap and tracking are tuned, not arbitrary. The container is 1112px wide
- * at every viewport from 1240px up; the wordmark takes 135 and the status pill
- * 171, which leaves 758 for eight nav items and their gaps. At `gap-4` and the
- * full `tracking-micro` the row measured 814 and squeezed the wordmark off its
- * 6.7593:1 ratio, which §14 forbids. `gap-2.5` with slightly tighter tracking
- * brings it inside the budget with room to spare.
+ * TYPEFACE. Jost — the brand display face, the same one the wordmark is built
+ * around — not the JetBrains Mono that §5.2 assigns to micro labels generally.
+ * Nick asked for the nav to match the branding, and he is right that it should:
+ * the nav sits inches from the wordmark, and a monospace row beside a geometric
+ * lockup reads as a different system. Mono stays where §5.2 put it everywhere
+ * else — eyebrows, rails, data labels.
+ *
+ * The size, gap and tracking are tuned, not arbitrary. The binding case is the
+ * 1024px breakpoint, where the container gives the row 921px and the wordmark
+ * takes 135 — leaving about 762 for eight labels and seven gaps. Jost is
+ * proportional and sets far narrower than mono at the same size, which buys
+ * back the tracking: these values land near §5.2's micro spec and still fit.
+ *
+ * If a label is ever added or renamed, re-measure. The budget is fixed.
  *
  * The underline stays --sun-500 on every route, MoonRey included: the header is
  * global chrome, and §6.1 specifies the gold underline there the same way it
@@ -27,7 +35,7 @@ import { NAV } from '@/lib/nav';
 
 const LINK = [
   'relative inline-block py-1',
-  'font-mono text-micro font-medium tracking-[0.12em] uppercase',
+  'font-display text-micro font-medium tracking-[0.15em] uppercase',
   'transition-colors duration-[var(--dur-nav)] ease-sunrey',
   // The underline. origin-left + scaleX is the growth-from-the-left.
   "after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-sun-500 after:content-['']",
@@ -45,8 +53,8 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label={LABELS.primaryNav} className="hidden xl:block">
-      <ul className="flex items-center gap-2.5">
+    <nav aria-label={LABELS.primaryNav} className="hidden lg:block">
+      <ul className="flex items-center gap-4 xl:gap-5">
         {NAV.map((route) => {
           const active = isActive(pathname, route.href);
           return (

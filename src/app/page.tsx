@@ -8,7 +8,6 @@ import { GrowMyMoney } from '@/components/blocks/GrowMyMoney';
 import { Hero } from '@/components/blocks/Hero';
 import { Manifesto } from '@/components/blocks/Manifesto';
 import { Premise } from '@/components/blocks/Premise';
-import { StatusBoard } from '@/components/blocks/StatusBoard';
 import { home } from '@content/home';
 
 /**
@@ -33,7 +32,6 @@ export default function HomePage() {
       <GrowMyMoney {...home.growMyMoney} />
       <Manifesto {...home.manifesto} />
       <CurrencyOfYou {...home.currencyOfYou} />
-      <StatusBoard {...home.statusBoard} />
       <ClosingBand {...home.closing} />
     </main>
   );

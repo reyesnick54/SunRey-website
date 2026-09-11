@@ -62,11 +62,6 @@ export type ExchangeContent = {
   };
 
   /** Section — Current state */
-  status: {
-    eyebrow: string;
-    heading: Heading;
-    body: readonly string[];
-  };
 };
 
 export const exchange: ExchangeContent = {
@@ -91,7 +86,7 @@ export const exchange: ExchangeContent = {
       'It stops working when the order book holds information rights that expire, compute that is jurisdiction-bound, and productive capacity that only some participants may hold. SunRey Exchange is designed so that rights, consent state, purpose and jurisdiction are evaluated before an order can rest — an ineligible order never reaches the book.',
     ],
     callout:
-      'All exchange functionality is designed to remain disabled by default until the required regulated structure exists. What runs today is a simulation.',
+      'Exchange functionality is designed to remain disabled by default until the required regulated structure exists in a given jurisdiction.',
   },
 
   markets: {
@@ -186,12 +181,4 @@ export const exchange: ExchangeContent = {
     ],
   },
 
-  status: {
-    eyebrow: 'CURRENT STATE',
-    heading: ['Sandbox.'],
-    body: [
-      'SunRey Exchange runs today as a simulation inside the internal sandbox. Order entry, matching and settlement are modelled end to end against simulated balances; no real money, no real digital assets and no real information rights are involved, and no market is open to participants outside the team.',
-      'Production exchange operation is disabled by default and stays that way until the regulated entity, custody arrangements, surveillance obligations and listing governance for a given jurisdiction are all in place — each one an explicit decision, never a consequence of the software being ready.',
-    ],
-  },
 };

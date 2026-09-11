@@ -108,7 +108,6 @@ export default function AccessPage() {
           ))}
         </div>
 
-        <p className="mt-8 text-micro text-faint">{access.categories.footnote}</p>
       </Section>
 
       <CopySection

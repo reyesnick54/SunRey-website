@@ -40,14 +40,6 @@ export type EconomyPanel = {
 // §7.8 — the status board
 // ---------------------------------------------------------------------------
 
-export type StatusTone = 'running' | 'testnet' | 'partial' | 'sandbox' | 'disabled';
-
-export type StatusRow = {
-  label: string;
-  state: string;
-  tone: StatusTone;
-  note: string;
-};
 
 // ---------------------------------------------------------------------------
 // §7.5 — the Grow My Money flow diagram
@@ -120,14 +112,6 @@ export type HomeContent = {
     link: NavLink;
   };
 
-  /** §7.8 — where we are */
-  statusBoard: {
-    eyebrow: string;
-    heading: Heading;
-    lede: string;
-    rows: readonly StatusRow[];
-    footnote: string;
-  };
 
   /** §7.9 — closing band */
   closing: {
@@ -301,74 +285,6 @@ export const home: HomeContent = {
     link: { label: 'Read the design principles →', href: '/sunrey-coin' },
   },
 
-  statusBoard: {
-    eyebrow: 'BUILD STATUS',
-    heading: ['Built in the open, honestly labelled.'],
-    lede: 'SunRey is a pre-production system. We would rather tell you exactly what runs today than describe a roadmap as a product.',
-    rows: [
-      {
-        label: 'Accounts & ledger',
-        state: 'RUNNING',
-        tone: 'running',
-        note: 'Durable, PostgreSQL-backed, restart-verified',
-      },
-      {
-        label: 'Internal transfers',
-        state: 'RUNNING',
-        tone: 'running',
-        note: 'Durable',
-      },
-      {
-        label: 'Native wallets',
-        state: 'RUNNING',
-        tone: 'running',
-        note: 'SunRey and MoonRey assets',
-      },
-      {
-        label: 'Vault',
-        state: 'RUNNING',
-        tone: 'running',
-        note: 'Bound to durable state',
-      },
-      {
-        label: 'SunRey Chain',
-        state: 'TESTNET',
-        tone: 'testnet',
-        note: 'Validator consensus, two native assets. Mainnet not active.',
-      },
-      {
-        label: 'Financial Agents',
-        state: 'PARTIAL',
-        tone: 'partial',
-        note: 'Research wired; conversational runtime in progress',
-      },
-      {
-        label: 'Exchange',
-        state: 'SANDBOX',
-        tone: 'sandbox',
-        note: 'Simulation only',
-      },
-      {
-        label: 'Access',
-        state: 'SANDBOX',
-        tone: 'sandbox',
-        note: 'Fixed sandbox inventory',
-      },
-      {
-        label: 'Live banking & cards',
-        state: 'DISABLED',
-        tone: 'disabled',
-        note: 'Requires regulated partners',
-      },
-      {
-        label: 'Data marketplace',
-        state: 'DISABLED',
-        tone: 'disabled',
-        note: 'Requires legal and provider prerequisites',
-      },
-    ],
-    footnote: 'All environments are simulated. No real money, no real digital assets and no real personal data exist in the system.',
-  },
 
   closing: {
     heading: ['The future of finance', 'is bright.'],

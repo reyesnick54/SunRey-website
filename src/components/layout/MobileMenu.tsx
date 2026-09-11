@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
-import { LABELS, STATUS_PILL } from '@content/site';
-import { Pill } from '@/components/primitives';
+import { LABELS } from '@content/site';
 import { NAV } from '@/lib/nav';
 import { isActive } from './Nav';
 
@@ -102,7 +101,7 @@ export function MobileMenu() {
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={open ? LABELS.closeMenu : LABELS.openMenu}
-        className="relative -mr-2 grid size-11 place-items-center rounded-full text-text xl:hidden"
+        className="relative -mr-2 grid size-11 place-items-center rounded-full text-text lg:hidden"
       >
         <span aria-hidden="true" className="flex w-5 flex-col gap-[5px]">
           <span className="h-px w-full bg-current" />
@@ -117,7 +116,7 @@ export function MobileMenu() {
           role="dialog"
           aria-modal="true"
           aria-label={LABELS.primaryNav}
-          className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-bg-sunken xl:hidden"
+          className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-bg-sunken lg:hidden"
         >
           <div
             aria-hidden="true"
@@ -167,12 +166,6 @@ export function MobileMenu() {
                 );
               })}
             </ul>
-
-            <div className="mt-12">
-              <Pill tone="status" dot pulse>
-                {STATUS_PILL}
-              </Pill>
-            </div>
           </nav>
         </div>
       ) : null}

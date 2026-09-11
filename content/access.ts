@@ -66,7 +66,6 @@ export type AccessContent = {
     eyebrow: string;
     heading: Heading;
     items: readonly string[];
-    footnote: string;
   };
 
   /** Where this goes */
@@ -87,7 +86,7 @@ export const access: AccessContent = {
   hero: {
     eyebrow: 'SUNREY ACCESS',
     heading: ['Not a currency.', 'A right to use.'],
-    lede: 'Access is a governed, non-cash right to use real productive capacity — mobility, lodging, compute, energy, transit, experiences — bounded by verified allocatable capacity and reserved funding. In the current sandbox, both are simulated.',
+    lede: 'Access is a governed, non-cash right to use real productive capacity — mobility, lodging, compute, energy, transit, experiences — bounded by verified allocatable capacity and reserved funding.',
     rail: [
       'MOBILITY',
       'LODGING',
@@ -175,8 +174,6 @@ export const access: AccessContent = {
     eyebrow: 'CATEGORIES',
     heading: ['Capacity people actually use.'],
     items: ['Mobility', 'Lodging', 'Experiences', 'AI Compute', 'Transit', 'Energy'],
-    footnote:
-      'Category inventory shown in any SunRey environment is simulated sandbox capacity with no real-world redeemability.',
   },
 
   direction: {

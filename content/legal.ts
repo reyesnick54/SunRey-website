@@ -6,11 +6,11 @@ import type { PageMeta } from './types';
  * Linked from the footer only; not in the nav (§1.1, §6.3). A single-column
  * typographic page — no cards, no glow, just a rule under each H2.
  *
- * The seven legal sections below (Pre-production status through Privacy of
+ * The seven legal sections below (Platform status through Privacy of
  * this site — §14's "seven §11.5 legal sections") each carry a
  * `{/* REVIEW: counsel *\/}` marker at the point they render, per §11.5's own
  * instruction that counsel will revise this file. `isDisclosure` marks the
- * one section (Pre-production status) that renders the shared `<Disclosure>`
+ * one section (Platform status) that renders the shared `<Disclosure>`
  * component instead of its own paragraphs, so that copy can never drift from
  * the footer's (§2.3, §6.3).
  *
@@ -21,7 +21,7 @@ import type { PageMeta } from './types';
 export type LegalSection = {
   heading: string;
   paragraphs: readonly string[];
-  /** True only for "Pre-production status" — render `<Disclosure/>`, not `paragraphs`. */
+  /** True only for "Platform status" — render `<Disclosure/>`, not `paragraphs`. */
   isDisclosure?: boolean;
 };
 
@@ -43,14 +43,14 @@ export const legal: LegalContent = {
   meta: {
     title: 'Legal & Disclosures',
     description:
-      'Pre-production status, forward-looking statements, and the disclosures that govern this site.',
+      'Platform status, forward-looking statements, and the disclosures that govern this site.',
   },
 
   subline: 'Last updated September 2026.',
 
   sections: [
     {
-      heading: 'Pre-production status',
+      heading: 'Platform status',
       paragraphs: [],
       isDisclosure: true,
     },

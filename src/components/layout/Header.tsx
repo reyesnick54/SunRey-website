@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { LABELS, STATUS_PILL } from '@content/site';
-import { Pill } from '@/components/primitives';
+import { LABELS } from '@content/site';
 import { HOME } from '@/lib/nav';
 import { MobileMenu } from './MobileMenu';
 import { Nav } from './Nav';
@@ -16,29 +15,26 @@ import { Wordmark } from './Wordmark';
  * Fixed to top. Transparent at scroll 0; past 24px it takes --bg-header, a 16px
  * backdrop blur and a --line bottom border, over 240ms.
  *
- * Three zones: wordmark left, the eight centred nav links, status pill right.
- * The pill is not a link.
+ * Two zones: the wordmark left, the eight nav links filling the rest. The
+ * status pill that used to sit on the right was removed at Nick's request along
+ * with the rest of the pre-production labelling.
  *
- * THE WIDTH BUDGET, which is tighter than it looks. The container is 1240px
- * with 64px of side padding (§5.3), so the row has 1112px to work with at every
- * viewport from 1240px up — it stops growing there, and the header gets no
- * wider however wide the window is. The wordmark takes 135 and the status pill
- * 171, leaving 758 for eight nav labels and their gaps. Nav.tsx is tuned to
- * that budget and measures 718.
+ * THE WIDTH BUDGET. The container is 1240px with 64px of side padding (§5.3),
+ * so the row has 1112px at every viewport from 1240px up — it stops growing
+ * there, and the header gets no wider however wide the window is. The wordmark
+ * takes 135, which leaves 953 for eight labels and their gaps; Nav.tsx measures
+ * well inside that. At the 1024px breakpoint the row is 921 and the budget is
+ * 762, which is what the nav's tracking and gap are tuned to.
  *
  * The zones are a `1fr auto 1fr` grid rather than a nav absolutely centred over
- * the row. Absolute centring ignores the side zones, and with eight items it
- * overlapped the status pill by 22px at every width from 1280 up; the fix that
- * followed squeezed the wordmark off its 6.7593:1 ratio, which §14 forbids
- * outright. Equal side tracks centre the nav on the container — and since the
- * padding is symmetric, on the viewport too — while reserving each side's
- * space, so neither collision can recur.
+ * the row. Absolute centring ignores the side zones and collided with the old
+ * pill at every width from 1280 up; the fix that followed squeezed the wordmark
+ * off its 6.7593:1 ratio, which §14 forbids outright. Equal side tracks centre
+ * the nav on the container — and since the padding is symmetric, on the
+ * viewport too — while reserving each side's space, so neither can recur.
  *
- * BREAKPOINT, and why it is 1280px rather than §6.2's 1024px: at 1024px the
- * row has 896px, which is less than 135 + 718 + 171 + gaps. There is no gap or
- * tracking that fixes that without making the labels illegible, so all three
- * zones appear together at 1280px and the overlay menu covers everything below.
- * Flagged for Nick: honouring 1024px exactly needs shorter labels (§1.1).
+ * The header is `fixed`, so the nav travels with the page rather than scrolling
+ * away, and takes its background and border past 24px of scroll.
  */
 
 const SCROLL_THRESHOLD = 24;
@@ -70,17 +66,11 @@ export function Header() {
       ].join(' ')}
     >
       {/*
-        Three zones — §6.1: wordmark left, nav centred, status pill right.
-
-        A grid of `1fr auto 1fr`, not absolute centring. Both side tracks take
-        the same width, so the nav sits on the container's centre line — and
-        because the container's side padding is symmetric, that is the viewport
-        centre line too. The difference from absolute centring is that the side
-        tracks reserve their own space: with eight nav items the centred row is
-        814px wide and the pill is 171px, and absolute centring overlapped them
-        by 22px at every width from 1280 up. A grid cannot overlap.
+        `1fr auto 1fr` from lg up, so the nav sits on the container's centre
+        line and the wordmark keeps its own track. Below lg the row collapses to
+        wordmark + hamburger and the third track disappears with it.
       */}
-      <div className="mx-auto grid h-full max-w-[var(--container-max)] grid-cols-[auto_1fr] items-center gap-6 px-[var(--container-pad)] xl:grid-cols-[1fr_auto_1fr]">
+      <div className="mx-auto grid h-full max-w-[var(--container-max)] grid-cols-[auto_1fr] items-center gap-6 px-[var(--container-pad)] lg:grid-cols-[1fr_auto_1fr]">
         <Link
           href={HOME.href}
           aria-label={LABELS.home}
@@ -89,16 +79,11 @@ export function Header() {
           <Wordmark height={20} priority className="h-5 w-auto max-w-none" />
         </Link>
 
-        <div className="hidden justify-self-center xl:block">
+        <div className="hidden justify-self-center lg:block">
           <Nav />
         </div>
 
         <div className="relative z-10 flex items-center justify-self-end">
-          <div className="hidden xl:block">
-            <Pill tone="status" dot pulse>
-              {STATUS_PILL}
-            </Pill>
-          </div>
           <MobileMenu />
         </div>
       </div>

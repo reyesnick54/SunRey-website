@@ -57,13 +57,6 @@ export default function BlockchainPage() {
         trailingLabel={blockchain.cannotMint.trailingLabel}
         closing={blockchain.cannotMint.closing}
       />
-
-      <CopySection
-        id="status-heading"
-        eyebrow={blockchain.status.eyebrow}
-        heading={blockchain.status.heading}
-        body={blockchain.status.body}
-      />
     </main>
   );
 }
