@@ -261,7 +261,7 @@ function gateScreen(error: boolean, next: string): string {
   }
   .shafts {
     position: fixed; inset: -10% -20%; pointer-events: none; z-index: 0; opacity: .5;
-    background: repeating-linear-gradient(18deg, transparent 0 118px, rgba(246,243,237,.03) 118px 119px);
+    background: repeating-linear-gradient(18deg, transparent 0 118px, rgba(246,243,237,.06) 118px 119px);
   }
   main { position: relative; z-index: 1; width: 100%; max-width: 430px; text-align: center; }
   /* The burst sits above the lockup, not behind it: a fixed-height box the

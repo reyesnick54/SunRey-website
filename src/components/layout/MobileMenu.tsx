@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { LABELS } from '@content/site';
 import { NAV } from '@/lib/nav';
@@ -22,6 +23,23 @@ import { isActive } from './Nav';
  *   - focus returns to the trigger on close
  *   - body scroll is locked while it is open
  *   - the trigger carries aria-expanded
+ *
+ * WHY THE PANEL IS PORTALLED TO <body>.
+ *
+ * This component is rendered inside <header>, and past 24px of scroll the
+ * header takes `backdrop-filter: blur(16px)` (§6.1). A filter, backdrop-filter
+ * or transform on an ancestor makes that ancestor the containing block for its
+ * `position: fixed` descendants — so `fixed inset-0` stopped meaning "the
+ * viewport" and started meaning "the 64px-tall header". At the top of a page
+ * the menu opened correctly; once scrolled, the overlay was clipped to the
+ * header strip, showing its close button over the live page with the links
+ * below the cut. It looked like the button had stopped responding.
+ *
+ * Portalling the panel out to <body> puts it back outside the header's
+ * containing block, so `fixed` means the viewport again at every scroll
+ * position. The alternative — moving the blur onto a child of the header —
+ * would fix this instance and leave the same trap set for the next fixed
+ * element anyone adds to the header.
  */
 
 const FOCUSABLE = 'a[href], button:not([disabled])';
@@ -77,7 +95,10 @@ export function MobileMenu() {
       if (event.shiftKey && (active === first || !panel!.contains(active))) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && (active === last || !panel!.contains(active))) {
+      } else if (
+        !event.shiftKey &&
+        (active === last || !panel!.contains(active))
+      ) {
         event.preventDefault();
         first.focus();
       }
@@ -109,66 +130,69 @@ export function MobileMenu() {
         </span>
       </button>
 
-      {open ? (
-        <div
-          ref={panelRef}
-          id={panelId}
-          role="dialog"
-          aria-modal="true"
-          aria-label={LABELS.primaryNav}
-          className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-bg-sunken lg:hidden"
-        >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-[70vh] bg-[image:var(--glow-sun)]"
-          />
-
-          <div className="relative flex h-[var(--header-h)] shrink-0 items-center justify-end px-[var(--container-pad)]">
-            <button
-              type="button"
-              onClick={close}
-              aria-label={LABELS.closeMenu}
-              className="-mr-2 grid size-11 place-items-center rounded-full text-text"
+      {open
+        ? createPortal(
+            <div
+              ref={panelRef}
+              id={panelId}
+              role="dialog"
+              aria-modal="true"
+              aria-label={LABELS.primaryNav}
+              className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-bg-sunken lg:hidden"
             >
-              <span aria-hidden="true" className="relative block size-5">
-                <span className="absolute top-1/2 left-0 h-px w-full rotate-45 bg-current" />
-                <span className="absolute top-1/2 left-0 h-px w-full -rotate-45 bg-current" />
-              </span>
-            </button>
-          </div>
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[70vh] bg-[image:var(--glow-sun)]"
+              />
 
-          <nav
-            aria-label={LABELS.primaryNav}
-            className="relative flex-1 px-[var(--container-pad)] pt-6 pb-16"
-          >
-            <ul className="flex flex-col gap-5">
-              {NAV.map((route, i) => {
-                const active = isActive(pathname, route.href);
-                return (
-                  <li
-                    key={route.href}
-                    className="motion-safe:animate-[sunrey-rise_420ms_var(--ease)_both]"
-                    /* eslint-disable-next-line no-restricted-syntax -- per-item
+              <div className="relative flex h-[var(--header-h)] shrink-0 items-center justify-end px-[var(--container-pad)]">
+                <button
+                  type="button"
+                  onClick={close}
+                  aria-label={LABELS.closeMenu}
+                  className="-mr-2 grid size-11 place-items-center rounded-full text-text"
+                >
+                  <span aria-hidden="true" className="relative block size-5">
+                    <span className="absolute top-1/2 left-0 h-px w-full rotate-45 bg-current" />
+                    <span className="absolute top-1/2 left-0 h-px w-full -rotate-45 bg-current" />
+                  </span>
+                </button>
+              </div>
+
+              <nav
+                aria-label={LABELS.primaryNav}
+                className="relative flex-1 px-[var(--container-pad)] pt-6 pb-16"
+              >
+                <ul className="flex flex-col gap-5">
+                  {NAV.map((route, i) => {
+                    const active = isActive(pathname, route.href);
+                    return (
+                      <li
+                        key={route.href}
+                        className="motion-safe:animate-[sunrey-rise_420ms_var(--ease)_both]"
+                        /* eslint-disable-next-line no-restricted-syntax -- per-item
                        stagger delay (§6.2, 60ms intervals); a utility class per
                        index would be seven dead classes in the stylesheet. */
-                    style={{ animationDelay: `${i * 60}ms` }}
-                  >
-                    <Link
-                      href={route.href}
-                      aria-current={active ? 'page' : undefined}
-                      className={`font-display text-display-m tracking-display-m ${
-                        active ? 'text-sun-500' : 'text-text'
-                      }`}
-                    >
-                      {route.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </div>
-      ) : null}
+                        style={{ animationDelay: `${i * 60}ms` }}
+                      >
+                        <Link
+                          href={route.href}
+                          aria-current={active ? 'page' : undefined}
+                          className={`font-display text-display-m tracking-display-m ${
+                            active ? 'text-sun-500' : 'text-text'
+                          }`}
+                        >
+                          {route.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

@@ -3,7 +3,11 @@
 **Repository:** `sunrey-website`
 **Deploys to:** `sunrey.xyz` / `www.sunrey.xyz`
 **Owner:** Nick — SunRey Technologies
-**Spec version:** 3.3 · September 2026
+**Spec version:** 3.4 · September 2026
+**Changes since 3.3:** the light field is lifted so it actually reads on a screen —
+hairlines 0.03/0.04 → 0.06/0.07 and the sun 0.20 → 0.26 (§5.1, §5.5); the gate's own
+hairline matches. The mobile menu panel is portalled to `<body>` (§6.2) because the
+header's backdrop-filter was capturing its `position: fixed`.
 **Changes since 3.2:** the status-reporting sections are deleted, at the owner's
 request, and §3.3.1 below overrides every part of §7–§11 that specified them. The
 §2.3 disclosure now renders on `/legal` only; the footer carries one neutral line
@@ -495,15 +499,22 @@ theme toggle.
   --line-gold:     rgba(227, 178, 60, 0.28);
   --line-moon:     rgba(143, 163, 184, 0.28);
   --line-accent:   var(--line-gold);   /* remapped to --line-moon on MoonRey pages */
-  --hairline:      rgba(246, 243, 237, 0.03);
-  --hairline-moon: rgba(199, 208, 218, 0.04);
+  --hairline:      rgba(246, 243, 237, 0.06);   /* v3.4 — 0.03 did not read on screen */
+  --hairline-moon: rgba(199, 208, 218, 0.07);   /* v3.4 — was 0.04 */
   --bg-header:     rgba(6, 5, 5, 0.72);
   --fig-plate:     #F7F5F1;   /* white-paper figure plate — the one light surface (§11.9) */
 
   /* Effects */
-  --glow-sun:      radial-gradient(60% 50% at 50% 0%, rgba(227,178,60,0.20) 0%, rgba(227,178,60,0.05) 45%, transparent 75%);
-  --glow-moon:     radial-gradient(60% 50% at 50% 0%, rgba(143,163,184,0.16) 0%, transparent 72%);
+  --glow-sun:      radial-gradient(60% 50% at 50% 0%, rgba(227,178,60,0.26) 0%, rgba(227,178,60,0.08) 45%, transparent 76%);
+  --glow-moon:     radial-gradient(60% 50% at 50% 0%, rgba(143,163,184,0.20) 0%, rgba(143,163,184,0.06) 45%, transparent 74%);
 }
+
+**v3.4 — the light field was too faint to exist.** At the original 0.03 hairline and
+0.20 sun, the ground read as flat black on a real display at real brightness: the one
+environmental effect the identity has was invisible, which is the opposite of
+"preserve it exactly". The values above are the corrected ones. They are still far
+under `--line` (0.09), and gold-tinted pixels are still a small minority of any
+screen, so §5.1's restraint rule holds. Do not put them back.
 ```
 
 **Color rules:**
@@ -585,6 +596,8 @@ The signature environmental effect. Build `<GlowField />` as a fixed, `pointer-e
 - On MoonRey pages, swap the glow to `--glow-moon` and the hairlines to `--hairline-moon`.
 - The glow translates at 0.25× scroll speed (parallax). Disable the parallax entirely under
   `prefers-reduced-motion`.
+- The gate screen (§11.8) draws its own copy of the hairlines inline. Keep its alpha in
+  step with `--hairline` — it is the first surface anyone sees.
 
 ### 5.6 Motion
 
@@ -658,6 +671,17 @@ Header height 76px desktop, 64px mobile. The header is fixed, so the nav travels
 the page.
 
 ### 6.2 Mobile navigation
+
+**The overlay panel is rendered into `<body>` with `createPortal`, not in place.**
+`MobileMenu` sits inside `<header>`, and past 24px of scroll the header takes
+`backdrop-filter: blur(16px)` (§6.1) — which makes the header the containing block for
+every `position: fixed` descendant. The panel's `fixed inset-0` then meant the 64px
+header strip rather than the viewport, so the menu opened correctly at the top of a page
+and, once scrolled, appeared not to open at all: its close button rendered over the live
+page and the links were clipped away below. Portalling it out restores `fixed` to the
+viewport at every scroll position. Do not move it back inline, and do not "fix" this by
+moving the blur onto a child — that leaves the same trap set for the next fixed element
+anyone puts in the header.
 
 Below 1024px the centered links collapse to a hamburger on the right. Tapping it opens a
 full-screen overlay: `--bg-sunken` with the glow field, links stacked at `display-m` size,

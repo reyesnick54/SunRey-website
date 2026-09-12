@@ -47,8 +47,14 @@
   --line-gold:     rgba(227, 178, 60, 0.28);
   --line-moon:     rgba(143, 163, 184, 0.28);
   --line-accent:   var(--line-gold);   /* remapped to --line-moon on MoonRey pages */
-  --hairline:      rgba(246, 243, 237, 0.03);
-  --hairline-moon: rgba(199, 208, 218, 0.04);
+  /* The §5.5 diagonal light rays.
+     §5.1 set these at 0.03 / 0.04. On a real screen at real brightness that is
+     below the threshold where the texture reads at all — the ground looked
+     flat black rather than lit, which loses the one environmental effect the
+     identity has. Roughly doubled so the rays are visible without becoming
+     stripes; they still sit far under the --line hairline at 0.09. */
+  --hairline:      rgba(246, 243, 237, 0.06);
+  --hairline-moon: rgba(199, 208, 218, 0.07);
   --bg-header:     rgba(6, 5, 5, 0.72);
   --fig-plate:     #F7F5F1;   /* white-paper figure plate — the one light surface (§11.9) */
 
@@ -62,9 +68,12 @@
   --numeral-sun:   #8A6419;   /* 3.80:1 on --bg, 3.69:1 on --bg-raised */
   --numeral-moon:  #5A6B7D;   /* 3.72:1 on --bg, 3.61:1 on --bg-raised */
 
-  /* Effects */
-  --glow-sun:      radial-gradient(60% 50% at 50% 0%, rgba(227,178,60,0.20) 0%, rgba(227,178,60,0.05) 45%, transparent 75%);
-  --glow-moon:     radial-gradient(60% 50% at 50% 0%, rgba(143,163,184,0.16) 0%, transparent 72%);
+  /* Effects.
+     The sun is lifted with the rays above, for the same reason: at 0.20 the
+     low sun was only just clearing black. Gold-tinted pixels are still a small
+     minority of any screen, which is the §5.1 restraint rule. */
+  --glow-sun:      radial-gradient(60% 50% at 50% 0%, rgba(227,178,60,0.26) 0%, rgba(227,178,60,0.08) 45%, transparent 76%);
+  --glow-moon:     radial-gradient(60% 50% at 50% 0%, rgba(143,163,184,0.20) 0%, rgba(143,163,184,0.06) 45%, transparent 74%);
 }
 
 /* --------------------------------------------------------------------------
